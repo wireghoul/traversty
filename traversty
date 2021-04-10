@@ -40,7 +40,7 @@ def check(URL, file,match) :
             p=file.split("/")
             tgt=ss.join(p)
             URI=URL.replace("FUZZ", f"{dir}{tgt}")
-            print(URI)
+            # print(URI)
             r = requests.get(URI)
             if (match in r.text):
                 print("SUCCESS!!! => ", URI)
@@ -71,3 +71,4 @@ sep = [
 
 # execute main
 main()
+
